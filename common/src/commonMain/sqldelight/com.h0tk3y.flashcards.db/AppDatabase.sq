@@ -1,0 +1,65 @@
+import com.h0tk3y.flashcards.common.Timestamp;
+
+CREATE TABLE CardList (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    modified INTEGER AS Timestamp NOT NULL
+);
+
+CREATE TABLE Flashcard (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    unknownWord TEXT NOT NULL,
+    knownWord TEXT NOT NULL,
+    modified INTEGER AS Timestamp NOT NULL,
+    comment TEXT,
+    listId INTEGER NOT NULL,
+    FOREIGN KEY (listId) REFERENCES CardList(id) ON DELETE CASCADE
+);
+
+selectAllLists:
+SELECT CardList.* FROM CardList ORDER BY CardList.modified DESC;
+
+selectListById:
+SELECT CardList.* FROM CardList WHERE id = ? ORDER BY CardList.modified DESC;
+
+findListByName:
+SELECT CardList.* FROM CardList WHERE CardList.name = ?;
+
+addList:
+INSERT INTO CardList(id, name, modified) VALUES (?, ?, ?);
+
+modifyList:
+UPDATE CardList SET name = ?, modified = ? WHERE id = ?;
+
+deleteList:
+DELETE FROM CardList WHERE id = ?;
+
+deleteAllLists:
+DELETE FROM CardList;
+
+selectFlashcardById:
+SELECT Flashcard.* FROM Flashcard WHERE id = ?;
+
+selectAllFlashcards:
+SELECT Flashcard.* FROM Flashcard ORDER BY Flashcard.modified DESC;
+
+addFlashcard:
+INSERT INTO Flashcard(id, unknownWord, knownWord, modified, comment, listId) VALUES(?, ?, ?, ?, ?, ?);
+
+modifyFlashcard:
+UPDATE Flashcard SET unknownWord = ?, knownWord = ?, comment = ?, modified = ? WHERE id = ?;
+
+deleteFlashcard:
+DELETE FROM Flashcard WHERE id = ?;
+
+deleteAllFlashcards:
+DELETE FROM Flashcard;
+
+lastInsertedId:
+SELECT last_insert_rowid();
+
+selectFlashCardsInList:
+SELECT Flashcard.*
+FROM Flashcard
+WHERE Flashcard.listId = ?
+ORDER BY Flashcard.modified DESC;
